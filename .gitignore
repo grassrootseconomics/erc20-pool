@@ -5,3 +5,4 @@ build/
 dist/
 solidity/*.json
 solidity/*.bin
+.venv
