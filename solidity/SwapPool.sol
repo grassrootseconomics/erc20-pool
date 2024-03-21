@@ -9,11 +9,11 @@ contract SwapPool {
 	// Implements EIP173
 	address public owner;
 
-	address tokenRegistry;
-	address tokenLimiter;
-	address quoter;
-	uint256 feePpm;
-	address feeAddress;
+	address public tokenRegistry;
+	address public tokenLimiter;
+	address public quoter;
+	uint256 public feePpm;
+	address public feeAddress;
 
 	string public name;
 	string public symbol;
