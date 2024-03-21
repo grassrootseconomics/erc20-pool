@@ -119,7 +119,7 @@ contract SwapPool {
 		return fee;
 	}
 
-	function getQuote(address _outToken, address _inToken, uint256 _value) private returns (uint256) {
+	function getQuote(address _outToken, address _inToken, uint256 _value) public returns (uint256) {
 		bool r;
 		bytes memory v;
 		uint256 quote;
