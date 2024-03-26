@@ -140,7 +140,6 @@ contract SwapPool {
 		uint256 balance;
 		uint256 fee;
 		uint256 outValue;
-		uint256 trueBalance;
 
 		outValue = getQuote(_outToken, _inToken, _value);
 
@@ -148,13 +147,10 @@ contract SwapPool {
 		require(r, "ERR_TOKEN");
 		balance = abi.decode(v, (uint256));
 
-		// unwithdrawn fees should remain untouched
-		trueBalance = balance - fees[_outToken];
-
 		// deduct the fees from the quoted outValue
 		fee = getFee(outValue);
 		outValue -= fee;
-
+		
 		// pool should have enough balance to cover the final outValue (fees already deducted)
 		require(balance >= outValue, "ERR_BALANCE");
 
