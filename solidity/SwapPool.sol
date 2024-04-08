@@ -119,7 +119,7 @@ contract SwapPool {
 		return fee;
 	}
 
-	function getQuote(address _outToken, address _inToken, uint256 _value) private returns (uint256) {
+	function getQuote(address _outToken, address _inToken, uint256 _value) public returns (uint256) {
 		bool r;
 		bytes memory v;
 		uint256 quote;
@@ -137,22 +137,26 @@ contract SwapPool {
 	function withdraw(address _outToken, address _inToken, uint256 _value) public {
 		bool r;
 		bytes memory v;
-		uint256 netValue;
 		uint256 balance;
 		uint256 fee;
+		uint256 outValue;
 
-		fee = getFee(_value);
-		netValue = _value - fee;
-		netValue = getQuote(_outToken, _inToken, netValue);
+		outValue = getQuote(_outToken, _inToken, _value);
 
 		(r, v) = _outToken.call(abi.encodeWithSignature("balanceOf(address)", this));
 		require(r, "ERR_TOKEN");
 		balance = abi.decode(v, (uint256));
-		require(balance >= netValue + fee, "ERR_BALANCE");
+
+		// deduct the fees from the quoted outValue
+		fee = getFee(outValue);
+		outValue -= fee;
+		
+		// pool should have enough balance to cover the final outValue (fees already deducted)
+		require(balance >= outValue, "ERR_BALANCE");
 
 		deposit(_inToken, _value);
 
-		(r, v) = _outToken.call(abi.encodeWithSignature('transfer(address,uint256)', msg.sender, netValue));
+		(r, v) = _outToken.call(abi.encodeWithSignature('transfer(address,uint256)', msg.sender, outValue));
 		require(r, "ERR_TOKEN");
 		r = abi.decode(v, (bool));
 		require(r, "ERR_TRANSFER");
@@ -235,3 +239,4 @@ contract SwapPool {
 		return false;
 	}
 }
+
