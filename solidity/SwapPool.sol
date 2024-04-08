@@ -38,13 +38,27 @@ contract SwapPool {
 
 	// Swap
   	event Swap(
-  	  address indexed initiator,
-  	  address indexed tokenIn,
-  	  address tokenOut,
-  	  uint256 amountIn,
-  	  uint256 amountOut,
-	  uint256 fee
+  		address indexed initiator,
+  	  	address indexed tokenIn,
+  	  	address tokenOut,
+  	  	uint256 amountIn,
+  	  	uint256 amountOut,
+	  	uint256 fee
   	);
+
+	// Deposit
+	event Deposit(
+		address indexed initator,
+		address indexed tokenIn,
+		uint256 amountIn
+	);
+
+	// Collect
+	event Collect(
+		address indexed feeAdress,
+		address tokenOut,
+		uint256 amountOut
+	);
 
 	constructor(string memory _name, string memory _symbol, uint8 _decimals, address _tokenRegistry, address _tokenLimiter) {
 		name = _name;
@@ -106,6 +120,11 @@ contract SwapPool {
 	}
 
 	function deposit(address _token, uint256 _value) public {
+		_deposit(_token, _value);
+		emit Deposit(msg.sender, _token, _value);
+	}
+
+	function _deposit(address _token, uint256 _value) private {
 		bool r;
 		bytes memory v;
 
@@ -164,7 +183,7 @@ contract SwapPool {
 		// pool should have enough balance to cover the final outValue (fees already deducted)
 		require(balance >= outValue, "ERR_BALANCE");
 
-		deposit(_inToken, _value);
+		_deposit(_inToken, _value);
 
 		(r, v) = _outToken.call(abi.encodeWithSignature('transfer(address,uint256)', msg.sender, outValue));
 		require(r, "ERR_TOKEN");
@@ -199,6 +218,7 @@ contract SwapPool {
 		r = abi.decode(v, (bool));
 		require(r, "ERR_TRANSFER");
 
+		emit Collect(feeAddress, _outToken, _value);
 		return _value;
 	}
 
