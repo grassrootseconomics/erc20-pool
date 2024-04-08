@@ -36,6 +36,16 @@ contract SwapPool {
 	// EIP173
 	event OwnershipTransferred(address indexed previousOwner, address indexed newOwner); // EIP173
 
+	// Swap
+  	event Swap(
+  	  address indexed initiator,
+  	  address indexed tokenIn,
+  	  address tokenOut,
+  	  uint256 amountIn,
+  	  uint256 amountOut,
+	  uint256 fee
+  	);
+
 	constructor(string memory _name, string memory _symbol, uint8 _decimals, address _tokenRegistry, address _tokenLimiter) {
 		name = _name;
 		symbol = _symbol;
@@ -164,6 +174,8 @@ contract SwapPool {
 		if (feeAddress != address(0)) {
 			fees[_outToken] += fee;
 		}
+
+		emit Swap(msg.sender, _inToken, _outToken, _value, outValue, fee);
 	}
 
 	// Withdraw token to fee address
