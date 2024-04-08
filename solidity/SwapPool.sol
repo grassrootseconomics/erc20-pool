@@ -36,7 +36,7 @@ contract SwapPool {
 	// EIP173
 	event OwnershipTransferred(address indexed previousOwner, address indexed newOwner); // EIP173
 
-	// Swap
+	// Emitted after a successful swap
   	event Swap(
   		address indexed initiator,
   	  	address indexed tokenIn,
@@ -46,16 +46,16 @@ contract SwapPool {
 	  	uint256 fee
   	);
 
-	// Deposit
+	// Emitted only after a liquidity donation
 	event Deposit(
-		address indexed initator,
+		address indexed initiator,
 		address indexed tokenIn,
 		uint256 amountIn
 	);
 
-	// Collect
+	// Emitted when collecting fees to the set feeAddress
 	event Collect(
-		address indexed feeAdress,
+		address indexed feeAddress,
 		address tokenOut,
 		uint256 amountOut
 	);
