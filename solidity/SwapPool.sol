@@ -21,7 +21,7 @@ contract SwapPool {
 
 	uint256 public totalSupply;
 
-	mapping ( address => uint256 ) fees;
+	mapping ( address => uint256 ) public fees;
 
 	// Implements Seal
 	uint256 public sealState;
@@ -211,6 +211,7 @@ contract SwapPool {
 		bool r;
 		bytes memory v;
 
+		require(msg.sender == owner, "ERR_OWNER");
 		require(feeAddress != address(0), "ERR_AXX");
 
 		(r, v) = _outToken.call(abi.encodeWithSignature('transfer(address,uint256)', feeAddress, _value));
