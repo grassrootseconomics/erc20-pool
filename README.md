@@ -84,7 +84,7 @@ An example quoter contract `DecimalQuote.sol` can be found in this repository. T
 
 Using the `setFee` method, a fee may be specified, in parts-per-million, to be deducted from each token swap.
 
-The fee will be deducted from the input token _before_ the value is sent to the "quoter" (if defined).
+_From the moment the fee has changed_, the fee will be deducted from the input token _before_ the value is sent to the "quoter" (if defined).
 
 Fee is defined in _parts-per-million_, i.e. `1000000` equals `100%`. Any value less than `1000000` is valid.
 

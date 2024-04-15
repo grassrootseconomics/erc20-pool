@@ -1,4 +1,6 @@
-eth_tester==0.5.0b3
-py-evm==0.3.0a20
-eth-interface==0.1.1
-erc20-limiter==0.0.2
+eth_tester==0.10.0b4
+py-evm==0.10.0b4
+rlp==3.0.0
+eth-accounts-index~=0.6.0
+eth-interface==0.2.0
+erc20-limiter==0.1.0
