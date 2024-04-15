@@ -56,9 +56,16 @@ class TestPoolFee(TestERC20Pool):
         r = self.rpc.do(o)
         self.assertEqual(int(r, 16), 990)
 
-        nonce_oracle = RPCNonceOracle(self.accounts[2], conn=self.conn)
         c = Pool(self.chain_spec, signer=self.signer, nonce_oracle=nonce_oracle)
-        (tx_hash, o) = c.withdraw(self.pool_address, self.accounts[2], self.foo_address)
+        (tx_hash, o) = c.withdraw(self.pool_address, self.accounts[1], self.foo_address)
+        self.rpc.do(o)
+        o = receipt(tx_hash)
+        r = self.conn.do(o)
+        self.assertEqual(r['status'], 0)
+
+        nonce_oracle = RPCNonceOracle(self.accounts[0], conn=self.conn)
+        c = Pool(self.chain_spec, signer=self.signer, nonce_oracle=nonce_oracle)
+        (tx_hash, o) = c.withdraw(self.pool_address, self.accounts[0], self.foo_address)
         self.rpc.do(o)
         o = receipt(tx_hash)
         r = self.conn.do(o)

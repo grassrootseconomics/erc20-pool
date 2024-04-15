@@ -163,7 +163,7 @@ contract SwapPool {
 		return quote;
 	}
 
-	function withdraw(address _outToken, address _inToken, uint256 _value) public {
+	function withdraw_less_fee(address _outToken, address _inToken, uint256 _value) public {
 		bool r;
 		bytes memory v;
 		uint256 balance;
@@ -195,6 +195,46 @@ contract SwapPool {
 		}
 
 		emit Swap(msg.sender, _inToken, _outToken, _value, outValue, fee);
+	}
+
+	function withdraw(address _outToken, address _inToken, uint256 _value) public {
+		bool r;
+		bytes memory v;
+		uint256 netValue;
+		uint256 outValue;
+		uint256 balance;
+		uint256 fee;
+
+		fee = getFee(_value);
+		netValue = _value - fee;
+		netValue = getQuote(_outToken, _inToken, netValue);
+
+		(r, v) = _outToken.call(abi.encodeWithSignature("balanceOf(address)", this));
+		require(r, "ERR_TOKEN");
+		balance = abi.decode(v, (uint256));
+		outValue = netValue + fee;
+		require(balance >= outValue, "ERR_BALANCE");
+
+		deposit(_inToken, _value);
+
+		(r, v) = _outToken.call(abi.encodeWithSignature('transfer(address,uint256)', msg.sender, netValue));
+		require(r, "ERR_TOKEN");
+		r = abi.decode(v, (bool));
+		require(r, "ERR_TRANSFER");
+		
+		if (feeAddress != address(0)) {
+			fees[_outToken] += fee;
+		}
+
+		emit Swap(msg.sender, _inToken, _outToken, _value, outValue, fee);
+	}
+
+	function withdraw(address _outToken, address _inToken, uint256 _value, bool _deduct_fee) public {
+		if (_deduct_fee) {
+			withdraw_less_fee(_outToken, _inToken, _value);
+		} else {
+			withdraw(_outToken, _inToken, _value);
+		}
 	}
 
 	// Withdraw token to fee address
