@@ -1,5 +1,5 @@
-SOLC = /usr/local/bin/solc
-EVM_VERSION = byzantium
+SOLC = solc
+EVM_VERSION = istanbul
 
 all:
 	$(SOLC) --bin SwapPool.sol --evm-version $(EVM_VERSION)| awk 'NR>3' > SwapPool.bin

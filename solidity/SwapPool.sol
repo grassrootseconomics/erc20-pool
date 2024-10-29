@@ -251,8 +251,10 @@ contract SwapPool {
 		bool r;
 		bytes memory v;
 
+		// This is a GE specific feature. However, it can be removed to allow anyone to push fees into a common feeAddress (profit-sharing)
 		require(msg.sender == owner, "ERR_OWNER");
 		require(feeAddress != address(0), "ERR_AXX");
+		require(_value <= fees[_outToken], "ERR_BALANCE");
 
 		(r, v) = _outToken.call(abi.encodeWithSignature('transfer(address,uint256)', feeAddress, _value));
 		require(r, "ERR_TOKEN");
