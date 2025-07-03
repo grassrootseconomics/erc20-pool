@@ -60,6 +60,8 @@ contract SwapPool {
 		uint256 amountOut
 	);
 
+	event QuoterUpdated(address indexed newQuoter);
+
 	constructor(string memory _name, string memory _symbol, uint8 _decimals, address _tokenRegistry, address _tokenLimiter) {
 		name = _name;
 		symbol = _symbol;
@@ -105,6 +107,7 @@ contract SwapPool {
 		require(!isSealed(QUOTER_STATE), "ERR_SEAL");
 		require(msg.sender == owner, "ERR_AXX");
 		quoter = _quoter;
+		emit QuoterUpdated(_quoter);
 	}
 
 	// Implements EIP173
